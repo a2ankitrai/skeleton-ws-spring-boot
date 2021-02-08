@@ -1,26 +1,29 @@
 plugins {
-  id 'java'
-  id 'org.springframework.boot' version '1.5.10.RELEASE'
-  id 'eclipse'
-  id 'jacoco'
-  id 'checkstyle'
-  id 'pmd'
-  id 'project-report'
-  id 'build-dashboard'
+  id 'org.springframework.boot' version '2.1.1.RELEASE'
+  id 'org.asciidoctor.convert' version '1.5.3'
 }
 
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'jacoco'
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+apply plugin: 'project-report'
+apply plugin: 'build-dashboard'
+
 ext {
-  jacocoVersion = '0.7.9'
-  checkstyleVersion = '7.8.2'
-  pmdVersion = '5.8.1'
-  guavaVersion = '20.0'
-  jadiraVersion = '5.0.0.GA'
-  swaggerVersion = '2.7.0'
+  snippetsDir = file('build/generated-snippets')
+  
+  jacocoVersion = '0.8.2'
+  checkstyleVersion = '8.14'
+  pmdVersion = '6.9.0'
 }
 
 group = 'com.leanstacks'
-version = '1.7.7'
-sourceCompatibility = 1.8
+version = '2.3.0'
+sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
   jcenter()
@@ -34,26 +37,24 @@ dependencies {
   
   compile group: 'org.springframework', name: 'spring-context-support'
   
-  compile group: 'joda-time', name: 'joda-time'
-  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda'
-  compile group: 'com.google.guava', name: 'guava', version: guavaVersion
   compile group: 'com.github.ben-manes.caffeine', name: 'caffeine'
-  compile group: 'org.jadira.usertype', name: 'usertype.extended', version: jadiraVersion
   compile group: 'org.liquibase', name: 'liquibase-core'
-  compile group: 'io.springfox', name: 'springfox-swagger2', version: swaggerVersion
-  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: swaggerVersion
   
   runtime group: 'org.hsqldb', name: 'hsqldb'
   runtime group: 'mysql', name: 'mysql-connector-java'
   
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testCompile group: 'org.springframework.security', name: 'spring-security-test'
+  testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
+  testCompile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
+  
+  asciidoctor group: 'org.springframework.restdocs', name: 'spring-restdocs-asciidoctor'
 }
 
 defaultTasks 'clean', 'build'
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '3.5.1'
+  gradleVersion = '4.10.2'
 }
 
 task encodePassword(type: JavaExec) {
@@ -64,8 +65,11 @@ task encodePassword(type: JavaExec) {
   }
 }
 
+bootJar {
+  launchScript()
+}
+
 springBoot {
-  executable = true
   buildInfo()
 }
 
@@ -81,7 +85,15 @@ jacocoTestReport {
   }
 }
 
-test.finalizedBy jacocoTestReport
+test {
+  outputs.dir snippetsDir
+  finalizedBy jacocoTestReport
+}
+
+asciidoctor {
+  inputs.dir snippetsDir
+  dependsOn test
+}
 
 checkstyle {
   toolVersion = checkstyleVersion
@@ -90,7 +102,8 @@ checkstyle {
 
 pmd {
   toolVersion = pmdVersion
-  ruleSetConfig = rootProject.resources.text.fromFile('etc/pmd/ruleset.xml')
+  ruleSets = []
+  ruleSetFiles = files('etc/pmd/ruleset.xml')
   ignoreFailures = true
 }
 

@@ -5,22 +5,19 @@
 
   <groupId>com.leanstacks</groupId>
   <artifactId>skeleton-ws-spring-boot</artifactId>
-  <version>1.7.7</version>
+  <version>2.3.0</version>
   <name>Spring Boot Starter Project</name>
   <description>Starter application stack for RESTful web services using Spring Boot.</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.10.RELEASE</version>
+    <version>2.1.1.RELEASE</version>
   </parent>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
-    <guava.version>20.0</guava.version>
-    <swagger.version>2.7.0</swagger.version>
-    <jadira.version>5.0.0.GA</jadira.version>
+    <java.version>11</java.version>
   </properties>
   
   <dependencies>
@@ -51,12 +48,6 @@
       <artifactId>mysql-connector-java</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- jadira custom Hibernate type mappings -->
-    <dependency>
-      <groupId>org.jadira.usertype</groupId>
-      <artifactId>usertype.extended</artifactId>
-      <version>${jadira.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
@@ -73,32 +64,7 @@
     </dependency>
     
     <!-- Dependencies for Miscellaneous Functionality -->
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-joda</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
 
-    <!-- Dependencies for Swagger -->
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <version>${swagger.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger-ui</artifactId>
-      <version>${swagger.version}</version>
-    </dependency>
-    
     <!-- Dependencies for Unit Testing -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -109,6 +75,18 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>27.0.1-jre</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- Dependencies for API Docs -->
+    <dependency>
+    	<groupId>org.springframework.restdocs</groupId>
+    	<artifactId>spring-restdocs-mockmvc</artifactId>
     </dependency>
   </dependencies>
 
